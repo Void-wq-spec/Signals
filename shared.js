@@ -229,7 +229,7 @@ const VIDEO_DEMO_MODAL_HTML = `
           <span style="font-family:'Noto Sans',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,.8);">Live ISL Translation</span>
         </div>
         <div style="background:#000;flex-shrink:0;">
-          <video controls playsinline preload="auto" style="width:100%;display:block;"><source src="video-demo-1.mp4" type="video/mp4"></video>
+          <video controls playsinline preload="none" style="width:100%;display:block;"><source src="video-demo-1.mp4" type="video/mp4"></video>
         </div>
         <div style="padding:16px 18px;flex:1;">
           <h4 style="font-family:'Noto Sans',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;">AI-Powered ISL Avatar</h4>
@@ -244,7 +244,7 @@ const VIDEO_DEMO_MODAL_HTML = `
           <span style="font-family:'Noto Sans',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,.8);">Website Widget</span>
         </div>
         <div style="background:#000;flex-shrink:0;">
-          <video controls playsinline preload="auto" style="width:100%;display:block;"><source src="video-demo-2.mp4" type="video/mp4"></video>
+          <video controls playsinline preload="none" style="width:100%;display:block;"><source src="video-demo-2.mp4" type="video/mp4"></video>
         </div>
         <div style="padding:16px 18px;flex:1;">
           <h4 style="font-family:'Noto Sans',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;">One-Line Website Widget</h4>
@@ -350,6 +350,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ─── SCROLL TO TOP ─── */
 function scrollTop() { window.scrollTo({top:0,behavior:'smooth'}); }
+
+/* ─── LAZY VIDEO LOADER ─── */
+document.addEventListener('DOMContentLoaded', () => {
+  if (!('IntersectionObserver' in window)) return;
+  const lazyVids = document.querySelectorAll('video[preload="none"]');
+  const vidObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const video = entry.target;
+      // Load src only when in viewport
+      video.querySelectorAll('source').forEach(src => {
+        if (src.dataset.src) { src.src = src.dataset.src; }
+      });
+      video.preload = 'metadata';
+      video.load();
+      vidObserver.unobserve(video);
+    });
+  }, { rootMargin: '200px' });
+  lazyVids.forEach(v => vidObserver.observe(v));
+});
 
 /* ─── SLIDESHOW ─── */
 let _cur = 0, _timer;
