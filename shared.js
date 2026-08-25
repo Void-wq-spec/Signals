@@ -54,7 +54,7 @@ const NAVBAR_HTML = `
   </div>
 </nav>
 <div class="mobile-menu" id="mobile-menu">
-  <button class="mobile-close" id="mobile-close">✕</button>
+  <button class="mobile-close" id="mobile-close" aria-label="Close menu">✕</button>
   <div style="margin-bottom:8px;">
     <span style="background:#fff;border-radius:12px;padding:8px 18px;display:inline-flex;align-items:center;">
       <img src="sign-isl-logo.png" alt="Sign ISL" style="height:56px;object-fit:contain;display:block;">
@@ -203,19 +203,19 @@ const ISL_WIDGET_MODAL_HTML = `
 
 /* ─── VIDEO DEMO MODAL ─── */
 const VIDEO_DEMO_MODAL_HTML = `
-<div id="video-demo-modal" style="display:none;position:fixed;inset:0;z-index:1002;background:rgba(10,10,24,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);align-items:center;justify-content:center;padding:16px;">
+<div id="video-demo-modal" role="dialog" aria-modal="true" aria-labelledby="vdm-title" style="display:none;position:fixed;inset:0;z-index:1002;background:rgba(10,10,24,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);align-items:center;justify-content:center;padding:16px;">
   <div style="background:#1A1A2E;border-radius:24px;width:min(1020px,96vw);max-height:92vh;overflow:hidden;overflow-y:auto;box-shadow:0 32px 80px rgba(0,0,0,.7);display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.09);">
 
     <!-- Header -->
     <div style="padding:16px 22px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px;position:sticky;top:0;background:#1A1A2E;z-index:3;">
       <div style="display:flex;align-items:center;gap:10px;">
         <div style="width:9px;height:9px;border-radius:50%;background:#FF6B6B;position:relative;flex-shrink:0;"><div style="position:absolute;inset:-4px;border-radius:50%;background:#FF6B6B;animation:pulse 1.6s ease-out infinite;opacity:.4;"></div></div>
-        <span style="font-family:'Noto Sans',sans-serif;font-size:15px;font-weight:800;color:#fff;">SignISL In Action</span>
+        <span id="vdm-title" style="font-family:'Noto Sans',sans-serif;font-size:15px;font-weight:800;color:#fff;">SignISL In Action</span>
         <span style="font-family:'Noto Sans',sans-serif;font-size:12px;color:rgba(255,255,255,.3);">Live Product Demos</span>
       </div>
       <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">
         <button onclick="openISLWidget();closeVideoDemo()" style="height:32px;padding:0 14px;border-radius:999px;background:rgba(91,79,207,.22);border:1px solid rgba(91,79,207,.4);color:#9B8FF8;font-family:'Noto Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;transition:all .2s;" onmouseover="this.style.background='rgba(91,79,207,.4)'" onmouseout="this.style.background='rgba(91,79,207,.22)'">Try Live →</button>
-        <button onclick="closeVideoDemo()" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.65);width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.1)'">✕</button>
+        <button onclick="closeVideoDemo()" aria-label="Close video demo" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.65);width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.1)'">✕</button>
       </div>
     </div>
 
@@ -228,8 +228,16 @@ const VIDEO_DEMO_MODAL_HTML = `
           <span style="background:rgba(0,201,167,.15);color:#00C9A7;border:1px solid rgba(0,201,167,.28);border-radius:999px;padding:3px 10px;font-family:'Noto Sans',sans-serif;font-size:11px;font-weight:600;white-space:nowrap;">Demo 1</span>
           <span style="font-family:'Noto Sans',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,.8);">Live ISL Translation</span>
         </div>
-        <div style="background:#000;flex-shrink:0;">
-          <video controls playsinline preload="none" style="width:100%;display:block;"><source src="video-demo-1.mp4" type="video/mp4"></video>
+        <div style="background:#000;flex-shrink:0;position:relative;">
+          <video controls playsinline preload="none" poster="video-demo-1.jpg"
+                 style="width:100%;display:block;"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <source src="video-demo-1.mp4" type="video/mp4">
+            <track kind="captions" srclang="en" label="English" default src="video-demo-1.vtt">
+          </video>
+          <div style="display:none;align-items:center;justify-content:center;padding:32px;background:#0A0A18;">
+            <p style="color:rgba(255,255,255,.5);font-family:'Noto Sans',sans-serif;font-size:13px;text-align:center;">Unable to load <code>video-demo-1.mp4</code></p>
+          </div>
         </div>
         <div style="padding:16px 18px;flex:1;">
           <h4 style="font-family:'Noto Sans',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;">AI-Powered ISL Avatar</h4>
@@ -243,8 +251,16 @@ const VIDEO_DEMO_MODAL_HTML = `
           <span style="background:rgba(123,111,232,.2);color:#9B8FF8;border:1px solid rgba(123,111,232,.3);border-radius:999px;padding:3px 10px;font-family:'Noto Sans',sans-serif;font-size:11px;font-weight:600;white-space:nowrap;">Demo 2</span>
           <span style="font-family:'Noto Sans',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,.8);">Website Widget</span>
         </div>
-        <div style="background:#000;flex-shrink:0;">
-          <video controls playsinline preload="none" style="width:100%;display:block;"><source src="video-demo-2.mp4" type="video/mp4"></video>
+        <div style="background:#000;flex-shrink:0;position:relative;">
+          <video controls playsinline preload="none" poster="video-demo-2.jpg"
+                 style="width:100%;display:block;"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <source src="video-demo-2.mp4" type="video/mp4">
+            <track kind="captions" srclang="en" label="English" default src="video-demo-2.vtt">
+          </video>
+          <div style="display:none;align-items:center;justify-content:center;padding:32px;background:#0A0A18;">
+            <p style="color:rgba(255,255,255,.5);font-family:'Noto Sans',sans-serif;font-size:13px;text-align:center;">Unable to load <code>video-demo-2.mp4</code></p>
+          </div>
         </div>
         <div style="padding:16px 18px;flex:1;">
           <h4 style="font-family:'Noto Sans',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;">One-Line Website Widget</h4>
@@ -515,7 +531,8 @@ function openVideoDemo() {
   }
   m.style.display = 'flex';
   document.body.style.overflow = 'hidden';
-  // Videos load natively via their <source> elements
+  // preload="none" videos don't buffer until explicitly triggered; force load now
+  m.querySelectorAll('video').forEach(v => { v.load(); });
 }
 function closeVideoDemo() {
   const m = document.getElementById('video-demo-modal');

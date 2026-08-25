@@ -149,8 +149,8 @@
 
 <!-- ═══ LOGO STRIP ═══ -->
 <section class="section-white" style="padding:32px 0;border-bottom:1px solid var(--cb);">
-  <div class="marquee-wrap">
-    <div class="marquee-track">
+  <div class="marquee-wrap" aria-label="Partners and institutions" role="region">
+    <div class="marquee-track" aria-hidden="true">
       <span class="logo-chip">BMU University</span><span class="logo-chip">ACIC-BMU Foundation</span>
       <span class="logo-chip">Indian Railways</span><span class="logo-chip">Delhi Metro</span>
       <span class="logo-chip">Indira Gandhi Airport</span><span class="logo-chip">Ministry of Education</span>
@@ -226,18 +226,31 @@
       <button onclick="openVideoDemo()" style="background:transparent;border:1.5px solid rgba(255,255,255,.25);color:rgba(255,255,255,.75);border-radius:999px;padding:0 24px;height:44px;font-family:var(--fn);font-weight:700;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;transition:all .25s;flex-shrink:0;" onmouseover="this.style.borderColor='rgba(255,255,255,.6)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,.25)';this.style.color='rgba(255,255,255,.75)'"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>Watch Both Demos</button>
     </div>
 
-    <div style="display:flex;flex-wrap:wrap;gap:18px;">
+    <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;">
 
-      <!-- Video 1 -->
-      <div class="video-card" style="flex:1;min-width:min(100%,340px);cursor:pointer;" onclick="openVideoDemo()">
-        <div style="background:linear-gradient(135deg,#0A0A18,#1A1A2E);position:relative;min-height:200px;display:flex;align-items:center;justify-content:center;">
-          <video style="width:100%;display:block;pointer-events:none;max-height:240px;object-fit:cover;" preload="metadata"><source src="video-demo-1.mp4" type="video/mp4"></video>
-          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);">
+      <!-- Video 1 — landscape 768×576 (4:3) -->
+      <div class="video-card" style="flex:3 1 55%;min-width:min(100%,300px);cursor:pointer;"
+           role="button" tabindex="0"
+           aria-label="Watch Demo 1: AI-Powered ISL Avatar — opens video player"
+           onclick="openVideoDemo()"
+           onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openVideoDemo()}">
+        <div style="background:#0A0A18;position:relative;overflow:hidden;">
+          <video id="v1-thumb" poster="video-demo-1.jpg"
+                 style="width:100%;display:block;pointer-events:none;aspect-ratio:4/3;object-fit:cover;"
+                 preload="metadata" playsinline muted
+                 onerror="document.getElementById('v1-err').style.display='flex'">
+            <source src="video-demo-1.mp4" type="video/mp4">
+            <track kind="captions" srclang="en" label="English" default src="video-demo-1.vtt">
+          </video>
+          <div id="v1-err" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:#0A0A18;z-index:3;">
+            <p style="color:rgba(255,255,255,.5);font-family:var(--fn);font-size:12px;text-align:center;padding:16px;">Unable to load<br><code style="font-size:11px;">video-demo-1.mp4</code></p>
+          </div>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);z-index:2;">
             <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:transform .2s,background .2s;" onmouseover="this.style.background='rgba(91,79,207,.5)';this.style.transform='scale(1.1)'" onmouseout="this.style.background='rgba(255,255,255,.15)';this.style.transform='scale(1)'">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             </div>
           </div>
-          <div style="position:absolute;top:12px;left:12px;background:rgba(0,201,167,.2);border:1px solid rgba(0,201,167,.4);border-radius:999px;padding:4px 12px;font-family:var(--fn);font-size:10px;font-weight:700;color:#00C9A7;">● LIVE</div>
+          <div style="position:absolute;top:12px;left:12px;background:rgba(0,201,167,.2);border:1px solid rgba(0,201,167,.4);border-radius:999px;padding:4px 12px;font-family:var(--fn);font-size:10px;font-weight:700;color:#00C9A7;z-index:2;" aria-hidden="true">● LIVE</div>
         </div>
         <div class="video-body">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span class="badge badge-t" style="font-size:10px;padding:3px 10px;">Demo 1</span></div>
@@ -247,16 +260,29 @@
         </div>
       </div>
 
-      <!-- Video 2 -->
-      <div class="video-card" style="flex:1;min-width:min(100%,340px);cursor:pointer;" onclick="openVideoDemo()">
-        <div style="background:linear-gradient(135deg,#0A0A18,#1A1A2E);position:relative;min-height:200px;display:flex;align-items:center;justify-content:center;">
-          <video style="width:100%;display:block;pointer-events:none;max-height:240px;object-fit:cover;" preload="metadata"><source src="video-demo-2.mp4" type="video/mp4"></video>
-          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);">
+      <!-- Video 2 — portrait 720×928 -->
+      <div class="video-card" style="flex:2 1 35%;min-width:min(100%,260px);cursor:pointer;"
+           role="button" tabindex="0"
+           aria-label="Watch Demo 2: Website Widget Integration — opens video player"
+           onclick="openVideoDemo()"
+           onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openVideoDemo()}">
+        <div style="background:#0A0A18;position:relative;overflow:hidden;">
+          <video id="v2-thumb" poster="video-demo-2.jpg"
+                 style="width:100%;display:block;pointer-events:none;aspect-ratio:720/928;object-fit:contain;"
+                 preload="metadata" playsinline muted
+                 onerror="document.getElementById('v2-err').style.display='flex'">
+            <source src="video-demo-2.mp4" type="video/mp4">
+            <track kind="captions" srclang="en" label="English" default src="video-demo-2.vtt">
+          </video>
+          <div id="v2-err" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:#0A0A18;z-index:3;">
+            <p style="color:rgba(255,255,255,.5);font-family:var(--fn);font-size:12px;text-align:center;padding:16px;">Unable to load<br><code style="font-size:11px;">video-demo-2.mp4</code></p>
+          </div>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);z-index:2;">
             <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:transform .2s,background .2s;" onmouseover="this.style.background='rgba(123,111,232,.5)';this.style.transform='scale(1.1)'" onmouseout="this.style.background='rgba(255,255,255,.15)';this.style.transform='scale(1)'">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             </div>
           </div>
-          <div style="position:absolute;top:12px;left:12px;background:rgba(123,111,232,.2);border:1px solid rgba(123,111,232,.4);border-radius:999px;padding:4px 12px;font-family:var(--fn);font-size:10px;font-weight:700;color:#9B8FF8;">● LIVE</div>
+          <div style="position:absolute;top:12px;left:12px;background:rgba(123,111,232,.2);border:1px solid rgba(123,111,232,.4);border-radius:999px;padding:4px 12px;font-family:var(--fn);font-size:10px;font-weight:700;color:#9B8FF8;z-index:2;" aria-hidden="true">● LIVE</div>
         </div>
         <div class="video-body">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span class="badge badge-p" style="font-size:10px;padding:3px 10px;">Demo 2</span></div>
@@ -325,7 +351,7 @@
       </a>
       <a href="hospital.html" class="card sol-card" style="text-decoration:none;">
         <div class="sol-img"><svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#1A1A2E"/><rect x="60" y="110" width="280" height="12" rx="4" fill="#243050"/><circle cx="120" cy="88" r="16" fill="#1A2535"/><rect x="107" y="105" width="26" height="42" rx="8" fill="#243050"/><circle cx="280" cy="92" r="14" fill="#1A2535"/><rect x="268" y="107" width="24" height="36" rx="7" fill="#1E2E40"/><circle cx="310" cy="100" r="10" fill="#1A2535"/><rect x="302" y="111" width="16" height="26" rx="5" fill="#1E2E40"/><rect x="170" y="82" width="60" height="80" rx="5" fill="#070C14" stroke="#1E3A50" stroke-width="1.5"/><circle cx="200" cy="115" r="16" fill="#7B6FE8" opacity=".85"/><rect x="189" y="132" width="22" height="24" rx="6" fill="#5B4FCF" opacity=".8"/><rect x="197" y="68" width="6" height="14" rx="2" fill="#FF6B6B" opacity=".6"/><rect x="193" y="72" width="14" height="6" rx="2" fill="#FF6B6B" opacity=".6"/></svg></div>
-        <div class="sol-body"><h3>Hospital</h3><p>Help deaf individualren explain symptoms and understand doctors - without needing an interpreter.</p><span>Explore →</span></div>
+        <div class="sol-body"><h3>Hospital</h3><p>Help deaf children explain symptoms and understand doctors - without needing an interpreter.</p><span>Explore →</span></div>
       </a>
       <a href="government.html" class="card sol-card" style="text-decoration:none;">
         <div class="sol-img"><svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="200" fill="#1A1A2E"/><rect x="50" y="100" width="300" height="80" rx="6" fill="#141E30"/><rect x="50" y="98" width="300" height="10" rx="4" fill="#1E2E44"/><circle cx="160" cy="82" r="15" fill="#1A2535"/><rect x="149" y="98" width="22" height="30" rx="7" fill="#1E2E40"/><rect x="200" y="55" width="55" height="80" rx="5" fill="#070C14" stroke="#2A3A50" stroke-width="1.5"/><circle cx="228" cy="87" r="13" fill="#7B6FE8" opacity=".85"/><rect x="218" y="101" width="20" height="24" rx="5" fill="#5B4FCF" opacity=".8"/><circle cx="300" cy="84" r="14" fill="#1A2535"/><rect x="288" y="99" width="24" height="32" rx="7" fill="#1E2E40"/><rect x="60" y="30" width="12" height="70" fill="#1E2E40"/><rect x="328" y="30" width="12" height="70" fill="#1E2E40"/><polygon points="55,30 345,30 300,8 100,8" fill="#1A2838"/></svg></div>

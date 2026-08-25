@@ -502,3 +502,10 @@ main{padding-top:calc(var(--nav-h) + 46px)}
   .hamburger{display:flex}
   .s-prev{left:-12px}.s-next{right:-12px}
 }
+
+/* ─── REDUCED MOTION (WCAG 2.1 2.3.3) ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  body { animation: none; opacity: 1; }
+  .marquee-track, .sdg-ticker-track { animation: none; }
+}
