@@ -531,8 +531,10 @@ function openVideoDemo() {
   }
   m.style.display = 'flex';
   document.body.style.overflow = 'hidden';
-  // preload="none" videos don't buffer until explicitly triggered; force load now
-  m.querySelectorAll('video').forEach(v => { v.load(); });
+  m.querySelectorAll('video').forEach(v => {
+    v.load();
+    v.play().catch(() => {});
+  });
 }
 function closeVideoDemo() {
   const m = document.getElementById('video-demo-modal');
