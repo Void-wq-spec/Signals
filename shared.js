@@ -220,23 +220,23 @@ const VIDEO_DEMO_MODAL_HTML = `
     </div>
 
     <!-- Videos -->
-    <div style="padding:24px;display:flex;flex-wrap:wrap;gap:20px;">
+    <div style="padding:24px;display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;">
 
-      <!-- Video 1 -->
-      <div style="flex:1;min-width:min(100%,380px);background:rgba(255,255,255,.04);border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;">
+      <!-- Video 1 — landscape 768×576 (4:3) -->
+      <div style="flex:3 1 55%;min-width:min(100%,320px);background:rgba(255,255,255,.04);border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;">
         <div style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:9px;">
           <span style="background:rgba(0,201,167,.15);color:#00C9A7;border:1px solid rgba(0,201,167,.28);border-radius:999px;padding:3px 10px;font-family:'Noto Sans',sans-serif;font-size:11px;font-weight:600;white-space:nowrap;">Demo 1</span>
           <span style="font-family:'Noto Sans',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,.8);">Live ISL Translation</span>
         </div>
-        <div style="background:#000;flex-shrink:0;position:relative;">
-          <video controls playsinline preload="none" poster="video-demo-1.jpg"
-                 style="width:100%;display:block;"
+        <div style="background:#000;flex-shrink:0;position:relative;aspect-ratio:4/3;overflow:hidden;">
+          <video controls playsinline preload="metadata" poster="video-demo-1.jpg"
+                 style="width:100%;height:100%;display:block;object-fit:contain;"
                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
             <source src="video-demo-1.mp4" type="video/mp4">
             <track kind="captions" srclang="en" label="English" default src="video-demo-1.vtt">
           </video>
-          <div style="display:none;align-items:center;justify-content:center;padding:32px;background:#0A0A18;">
-            <p style="color:rgba(255,255,255,.5);font-family:'Noto Sans',sans-serif;font-size:13px;text-align:center;">Unable to load <code>video-demo-1.mp4</code></p>
+          <div style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:#0A0A18;">
+            <p style="color:rgba(255,255,255,.5);font-family:'Noto Sans',sans-serif;font-size:13px;text-align:center;padding:24px;">Unable to load <code>video-demo-1.mp4</code></p>
           </div>
         </div>
         <div style="padding:16px 18px;flex:1;">
@@ -245,21 +245,21 @@ const VIDEO_DEMO_MODAL_HTML = `
         </div>
       </div>
 
-      <!-- Video 2 -->
-      <div style="flex:1;min-width:min(100%,380px);background:rgba(255,255,255,.04);border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;">
+      <!-- Video 2 — portrait 720×928 -->
+      <div style="flex:2 1 35%;min-width:min(100%,260px);background:rgba(255,255,255,.04);border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;">
         <div style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:9px;">
           <span style="background:rgba(123,111,232,.2);color:#9B8FF8;border:1px solid rgba(123,111,232,.3);border-radius:999px;padding:3px 10px;font-family:'Noto Sans',sans-serif;font-size:11px;font-weight:600;white-space:nowrap;">Demo 2</span>
           <span style="font-family:'Noto Sans',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,.8);">Website Widget</span>
         </div>
-        <div style="background:#000;flex-shrink:0;position:relative;">
-          <video controls playsinline preload="none" poster="video-demo-2.jpg"
-                 style="width:100%;display:block;"
+        <div style="background:#000;flex-shrink:0;position:relative;aspect-ratio:720/928;overflow:hidden;">
+          <video controls playsinline preload="metadata" poster="video-demo-2.jpg"
+                 style="width:100%;height:100%;display:block;object-fit:contain;"
                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
             <source src="video-demo-2.mp4" type="video/mp4">
             <track kind="captions" srclang="en" label="English" default src="video-demo-2.vtt">
           </video>
-          <div style="display:none;align-items:center;justify-content:center;padding:32px;background:#0A0A18;">
-            <p style="color:rgba(255,255,255,.5);font-family:'Noto Sans',sans-serif;font-size:13px;text-align:center;">Unable to load <code>video-demo-2.mp4</code></p>
+          <div style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:#0A0A18;">
+            <p style="color:rgba(255,255,255,.5);font-family:'Noto Sans',sans-serif;font-size:13px;text-align:center;padding:24px;">Unable to load <code>video-demo-2.mp4</code></p>
           </div>
         </div>
         <div style="padding:16px 18px;flex:1;">
