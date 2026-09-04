@@ -229,7 +229,7 @@ const VIDEO_DEMO_MODAL_HTML = `
           <span style="font-family:'Noto Sans',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,.8);">Live ISL Translation</span>
         </div>
         <div style="background:#000;flex-shrink:0;position:relative;aspect-ratio:4/3;overflow:hidden;">
-          <video controls playsinline preload="metadata" poster="video-demo-1.jpg"
+          <video controls playsinline muted preload="metadata" poster="video-demo-1.jpg"
                  style="width:100%;height:100%;display:block;object-fit:contain;"
                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
             <source src="video-demo-1.mp4" type="video/mp4">
@@ -252,7 +252,7 @@ const VIDEO_DEMO_MODAL_HTML = `
           <span style="font-family:'Noto Sans',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,.8);">Website Widget</span>
         </div>
         <div style="background:#000;flex-shrink:0;position:relative;aspect-ratio:720/928;overflow:hidden;">
-          <video controls playsinline preload="metadata" poster="video-demo-2.jpg"
+          <video controls playsinline muted preload="metadata" poster="video-demo-2.jpg"
                  style="width:100%;height:100%;display:block;object-fit:contain;"
                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
             <source src="video-demo-2.mp4" type="video/mp4">
