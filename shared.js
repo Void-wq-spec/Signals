@@ -202,81 +202,124 @@ const ISL_WIDGET_MODAL_HTML = `
 </div>`;
 
 /* ─── VIDEO DEMO MODAL ─── */
-const VIDEO_DEMO_MODAL_HTML = `
-<div id="video-demo-modal" role="dialog" aria-modal="true" aria-labelledby="vdm-title" style="display:none;position:fixed;inset:0;z-index:1002;background:rgba(10,10,24,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);align-items:center;justify-content:center;padding:16px;">
-  <div style="background:#1A1A2E;border-radius:24px;width:min(1020px,96vw);max-height:92vh;overflow:hidden;overflow-y:auto;box-shadow:0 32px 80px rgba(0,0,0,.7);display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.09);">
+// Backdrop and panel are DOM siblings appended to <body> — never parent/child.
+// backdrop-filter + background on the same element with children triggers a
+// Chromium/WebKit compositing bug where children paint behind the background.
+// Splitting them as siblings at different z-indices avoids the bug entirely.
 
-    <!-- Header -->
-    <div style="padding:16px 22px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px;position:sticky;top:0;background:#1A1A2E;z-index:3;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div style="width:9px;height:9px;border-radius:50%;background:#FF6B6B;position:relative;flex-shrink:0;"><div style="position:absolute;inset:-4px;border-radius:50%;background:#FF6B6B;animation:pulse 1.6s ease-out infinite;opacity:.4;"></div></div>
-        <span id="vdm-title" style="font-family:'Noto Sans',sans-serif;font-size:15px;font-weight:800;color:#fff;">SignISL In Action</span>
-        <span style="font-family:'Noto Sans',sans-serif;font-size:12px;color:rgba(255,255,255,.3);">Live Product Demos</span>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">
-        <button onclick="openISLWidget();closeVideoDemo()" style="height:32px;padding:0 14px;border-radius:999px;background:rgba(91,79,207,.22);border:1px solid rgba(91,79,207,.4);color:#9B8FF8;font-family:'Noto Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;transition:all .2s;" onmouseover="this.style.background='rgba(91,79,207,.4)'" onmouseout="this.style.background='rgba(91,79,207,.22)'">Try Live →</button>
-        <button onclick="closeVideoDemo()" aria-label="Close video demo" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.65);width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.1)'">✕</button>
-      </div>
+let _vdmOpen = false, _vdmTrigger = null, _vdmScrollY = 0;
+
+const _VDM_PANEL_INNER = `
+  <div style="padding:16px 22px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px;position:sticky;top:0;background:#1A1A2E;z-index:3;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:9px;height:9px;border-radius:50%;background:#FF6B6B;position:relative;flex-shrink:0;"><div style="position:absolute;inset:-4px;border-radius:50%;background:#FF6B6B;animation:pulse 1.6s ease-out infinite;opacity:.4;"></div></div>
+      <span id="vdm-title" style="font-family:'Noto Sans',sans-serif;font-size:15px;font-weight:800;color:#fff;">SignISL In Action</span>
+      <span style="font-family:'Noto Sans',sans-serif;font-size:12px;color:rgba(255,255,255,.3);">Live Product Demos</span>
     </div>
-
-    <!-- Videos -->
-    <div style="padding:24px;display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;">
-
-      <!-- Video 1 — landscape 768×576 (4:3) -->
-      <div style="flex:3 1 55%;min-width:min(100%,320px);background:rgba(255,255,255,.04);border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;">
-        <div style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:9px;">
-          <span style="background:rgba(0,201,167,.15);color:#00C9A7;border:1px solid rgba(0,201,167,.28);border-radius:999px;padding:3px 10px;font-family:'Noto Sans',sans-serif;font-size:11px;font-weight:600;white-space:nowrap;">Demo 1</span>
-          <span style="font-family:'Noto Sans',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,.8);">Live ISL Translation</span>
-        </div>
-        <div style="background:#000;flex-shrink:0;position:relative;aspect-ratio:4/3;overflow:hidden;">
-          <video controls playsinline muted preload="metadata" poster="video-demo-1.jpg"
-                 style="width:100%;height:100%;display:block;object-fit:contain;"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <source src="video-demo-1.mp4" type="video/mp4">
-            <track kind="captions" srclang="en" label="English" default src="video-demo-1.vtt">
-          </video>
-          <div style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:#0A0A18;">
-            <p style="color:rgba(255,255,255,.5);font-family:'Noto Sans',sans-serif;font-size:13px;text-align:center;padding:24px;">Unable to load <code>video-demo-1.mp4</code></p>
-          </div>
-        </div>
-        <div style="padding:16px 18px;flex:1;">
-          <h4 style="font-family:'Noto Sans',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;">AI-Powered ISL Avatar</h4>
-          <p style="font-family:'Noto Sans',sans-serif;font-size:13px;color:rgba(255,255,255,.5);line-height:1.65;">Watch SignISL translate speech and text into Indian Sign Language in real time - the AI avatar signs every word instantly across 12+ Indian languages.</p>
-        </div>
-      </div>
-
-      <!-- Video 2 — portrait 720×928 -->
-      <div style="flex:2 1 35%;min-width:min(100%,260px);background:rgba(255,255,255,.04);border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;">
-        <div style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:9px;">
-          <span style="background:rgba(123,111,232,.2);color:#9B8FF8;border:1px solid rgba(123,111,232,.3);border-radius:999px;padding:3px 10px;font-family:'Noto Sans',sans-serif;font-size:11px;font-weight:600;white-space:nowrap;">Demo 2</span>
-          <span style="font-family:'Noto Sans',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,.8);">Website Widget</span>
-        </div>
-        <div style="background:#000;flex-shrink:0;position:relative;aspect-ratio:720/928;overflow:hidden;">
-          <video controls playsinline muted preload="metadata" poster="video-demo-2.jpg"
-                 style="width:100%;height:100%;display:block;object-fit:contain;"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <source src="video-demo-2.mp4" type="video/mp4">
-            <track kind="captions" srclang="en" label="English" default src="video-demo-2.vtt">
-          </video>
-          <div style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:#0A0A18;">
-            <p style="color:rgba(255,255,255,.5);font-family:'Noto Sans',sans-serif;font-size:13px;text-align:center;padding:24px;">Unable to load <code>video-demo-2.mp4</code></p>
-          </div>
-        </div>
-        <div style="padding:16px 18px;flex:1;">
-          <h4 style="font-family:'Noto Sans',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;">One-Line Website Widget</h4>
-          <p style="font-family:'Noto Sans',sans-serif;font-size:13px;color:rgba(255,255,255,.5);line-height:1.65;">See the SignISL widget embedded live - one script tag brings full ISL accessibility to any HTML, React, or WordPress site in under 5 minutes.</p>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- CTA row -->
-    <div style="padding:0 24px 26px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-      <button onclick="openFounderModal();closeVideoDemo()" style="background:#5B4FCF;color:#fff;border-radius:999px;padding:0 28px;height:46px;font-family:'Noto Sans',sans-serif;font-weight:700;font-size:14px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 6px 20px rgba(91,79,207,.4);transition:all .25s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Contact Founders →</button>
-      <a href="widget.html" onclick="closeVideoDemo()" style="background:rgba(255,255,255,.07);color:rgba(255,255,255,.75);border-radius:999px;padding:0 24px;height:46px;font-family:'Noto Sans',sans-serif;font-weight:700;font-size:14px;border:1px solid rgba(255,255,255,.15);cursor:pointer;display:inline-flex;align-items:center;gap:8px;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.14)'" onmouseout="this.style.background='rgba(255,255,255,.07)'">Integration Guide</a>
+    <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">
+      <button onclick="openISLWidget();closeVideoDemo()" style="height:32px;padding:0 14px;border-radius:999px;background:rgba(91,79,207,.22);border:1px solid rgba(91,79,207,.4);color:#9B8FF8;font-family:'Noto Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;transition:all .2s;" onmouseover="this.style.background='rgba(91,79,207,.4)'" onmouseout="this.style.background='rgba(91,79,207,.22)'">Try Live →</button>
+      <button onclick="closeVideoDemo()" aria-label="Close video demo" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.65);min-width:44px;min-height:44px;border-radius:50%;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.1)'">✕</button>
     </div>
   </div>
-</div>`;
+  <div style="padding:24px;display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;">
+    <div style="flex:3 1 55%;min-width:min(100%,320px);background:rgba(255,255,255,.04);border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;">
+      <div style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:9px;">
+        <span style="background:rgba(0,201,167,.15);color:#00C9A7;border:1px solid rgba(0,201,167,.28);border-radius:999px;padding:3px 10px;font-family:'Noto Sans',sans-serif;font-size:11px;font-weight:600;white-space:nowrap;">Demo 1</span>
+        <span style="font-family:'Noto Sans',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,.8);">Live ISL Translation</span>
+      </div>
+      <div style="background:#000;flex-shrink:0;position:relative;aspect-ratio:4/3;overflow:hidden;">
+        <video controls playsinline muted preload="metadata" poster="video-demo-1.jpg"
+               style="width:100%;height:100%;display:block;object-fit:contain;"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <source src="video-demo-1.mp4" type="video/mp4">
+          <track kind="captions" srclang="en" label="English" default src="video-demo-1.vtt">
+        </video>
+        <div style="display:none;position:absolute;inset:0;flex-direction:column;align-items:center;justify-content:center;background:#0A0A18;gap:12px;">
+          <p style="color:rgba(255,255,255,.5);font-family:'Noto Sans',sans-serif;font-size:13px;text-align:center;margin:0;padding:0 24px;">Unable to load video-demo-1.mp4</p>
+          <a href="video-demo-1.mp4" download style="color:#00C9A7;font-family:'Noto Sans',sans-serif;font-size:12px;font-weight:700;text-decoration:none;padding:8px 18px;border:1px solid rgba(0,201,167,.4);border-radius:999px;">Download Demo 1</a>
+        </div>
+      </div>
+      <div style="padding:16px 18px;flex:1;">
+        <h4 style="font-family:'Noto Sans',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;">AI-Powered ISL Avatar</h4>
+        <p style="font-family:'Noto Sans',sans-serif;font-size:13px;color:rgba(255,255,255,.5);line-height:1.65;">Watch SignISL translate speech and text into Indian Sign Language in real time - the AI avatar signs every word instantly across 12+ Indian languages.</p>
+      </div>
+    </div>
+    <div style="flex:2 1 35%;min-width:min(100%,260px);background:rgba(255,255,255,.04);border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;">
+      <div style="padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:9px;">
+        <span style="background:rgba(123,111,232,.2);color:#9B8FF8;border:1px solid rgba(123,111,232,.3);border-radius:999px;padding:3px 10px;font-family:'Noto Sans',sans-serif;font-size:11px;font-weight:600;white-space:nowrap;">Demo 2</span>
+        <span style="font-family:'Noto Sans',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,.8);">Website Widget</span>
+      </div>
+      <div style="background:#000;flex-shrink:0;position:relative;aspect-ratio:720/928;overflow:hidden;">
+        <video controls playsinline muted preload="metadata" poster="video-demo-2.jpg"
+               style="width:100%;height:100%;display:block;object-fit:contain;"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <source src="video-demo-2.mp4" type="video/mp4">
+          <track kind="captions" srclang="en" label="English" default src="video-demo-2.vtt">
+        </video>
+        <div style="display:none;position:absolute;inset:0;flex-direction:column;align-items:center;justify-content:center;background:#0A0A18;gap:12px;">
+          <p style="color:rgba(255,255,255,.5);font-family:'Noto Sans',sans-serif;font-size:13px;text-align:center;margin:0;padding:0 24px;">Unable to load video-demo-2.mp4</p>
+          <a href="video-demo-2.mp4" download style="color:#9B8FF8;font-family:'Noto Sans',sans-serif;font-size:12px;font-weight:700;text-decoration:none;padding:8px 18px;border:1px solid rgba(123,111,232,.4);border-radius:999px;">Download Demo 2</a>
+        </div>
+      </div>
+      <div style="padding:16px 18px;flex:1;">
+        <h4 style="font-family:'Noto Sans',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;">One-Line Website Widget</h4>
+        <p style="font-family:'Noto Sans',sans-serif;font-size:13px;color:rgba(255,255,255,.5);line-height:1.65;">See the SignISL widget embedded live - one script tag brings full ISL accessibility to any HTML, React, or WordPress site in under 5 minutes.</p>
+      </div>
+    </div>
+  </div>
+  <div style="padding:0 24px 26px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <button onclick="openFounderModal();closeVideoDemo()" style="background:#5B4FCF;color:#fff;border-radius:999px;padding:0 28px;height:46px;font-family:'Noto Sans',sans-serif;font-weight:700;font-size:14px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 6px 20px rgba(91,79,207,.4);transition:all .25s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Contact Founders →</button>
+    <a href="widget.html" onclick="closeVideoDemo()" style="background:rgba(255,255,255,.07);color:rgba(255,255,255,.75);border-radius:999px;padding:0 24px;height:46px;font-family:'Noto Sans',sans-serif;font-weight:700;font-size:14px;border:1px solid rgba(255,255,255,.15);cursor:pointer;display:inline-flex;align-items:center;gap:8px;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.14)'" onmouseout="this.style.background='rgba(255,255,255,.07)'">Integration Guide</a>
+  </div>`;
+
+function _vdmKeydown(e) {
+  if (e.key === 'Escape') { closeVideoDemo(); return; }
+  if (e.key !== 'Tab') return;
+  const pn = document.getElementById('vdm-panel');
+  if (!pn) return;
+  const els = [...pn.querySelectorAll('button,a[href],[tabindex]:not([tabindex="-1"])')].filter(el => !el.disabled && !el.hidden);
+  if (!els.length) return;
+  const first = els[0], last = els[els.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+}
+function _vdmPopstate() { _vdmHide(); }
+function _vdmHide() {
+  _vdmOpen = false;
+  document.removeEventListener('keydown', _vdmKeydown);
+  window.removeEventListener('popstate', _vdmPopstate);
+  const bd = document.getElementById('vdm-backdrop');
+  const pn = document.getElementById('vdm-panel');
+  if (bd) bd.style.display = 'none';
+  if (pn) {
+    pn.style.display = 'none';
+    pn.querySelectorAll('video').forEach(v => { v.pause(); v.currentTime = 0; });
+  }
+  document.body.style.overflow = '';
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.width = '';
+  window.scrollTo(0, _vdmScrollY);
+  try { if (_vdmTrigger && _vdmTrigger.focus) _vdmTrigger.focus(); } catch(_e) {}
+  _vdmTrigger = null;
+}
+function _vdmEnsure() {
+  if (document.getElementById('vdm-panel')) return;
+  const bd = document.createElement('div');
+  bd.id = 'vdm-backdrop';
+  bd.setAttribute('aria-hidden', 'true');
+  bd.style.cssText = 'position:fixed;inset:0;z-index:1002;background:rgba(10,10,24,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:none;';
+  bd.addEventListener('click', closeVideoDemo);
+  document.body.appendChild(bd);
+  const pn = document.createElement('div');
+  pn.id = 'vdm-panel';
+  pn.setAttribute('role', 'dialog');
+  pn.setAttribute('aria-modal', 'true');
+  pn.setAttribute('aria-labelledby', 'vdm-title');
+  pn.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1003;width:min(1020px,96vw);max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#1A1A2E;border-radius:24px;box-shadow:0 32px 80px rgba(0,0,0,.7);display:none;flex-direction:column;border:1px solid rgba(255,255,255,.09);';
+  pn.innerHTML = _VDM_PANEL_INNER;
+  document.body.appendChild(pn);
+}
 
 /* ─── FLOATING ISL WIDGET BUTTON ─── */
 const ISL_WIDGET_BTN_HTML = `
@@ -521,28 +564,33 @@ window.islWidgetError = islWidgetError;
 const _vBlobs = {};
 function _preloadVid(file) { /* no-op: native <source> elements handle video loading */ }
 
-/* ─── VIDEO DEMO MODAL ─── */
 function openVideoDemo() {
-  let m = document.getElementById('video-demo-modal');
-  if (!m) {
-    document.body.insertAdjacentHTML('beforeend', VIDEO_DEMO_MODAL_HTML);
-    m = document.getElementById('video-demo-modal');
-    m.addEventListener('click', function(e){ if(e.target===m) closeVideoDemo(); });
-  }
-  m.style.display = 'flex';
+  if (_vdmOpen) return;
+  _vdmOpen = true;
+  _vdmTrigger = document.activeElement;
+  _vdmEnsure();
+  document.getElementById('vdm-backdrop').style.display = 'block';
+  const pn = document.getElementById('vdm-panel');
+  pn.style.display = 'flex';
+  // iOS-safe scroll lock: position:fixed + top offset preserves visual position
+  _vdmScrollY = window.scrollY;
   document.body.style.overflow = 'hidden';
-  m.querySelectorAll('video').forEach(v => {
-    v.load();
-    v.play().catch(() => {});
-  });
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${_vdmScrollY}px`;
+  document.body.style.width = '100%';
+  // Push history entry so browser back button closes the modal
+  history.pushState({ vdm: 1 }, '');
+  window.addEventListener('popstate', _vdmPopstate);
+  document.addEventListener('keydown', _vdmKeydown);
+  const firstFocusable = pn.querySelector('button,a[href],[tabindex]:not([tabindex="-1"])');
+  if (firstFocusable) firstFocusable.focus();
+  pn.querySelectorAll('video').forEach(v => { v.load(); v.play().catch(() => {}); });
 }
 function closeVideoDemo() {
-  const m = document.getElementById('video-demo-modal');
-  if (m) {
-    m.querySelectorAll('video').forEach(v => { v.pause(); });
-    m.style.display = 'none';
-  }
-  document.body.style.overflow = '';
+  if (!_vdmOpen) return;
+  const hadState = history.state && history.state.vdm;
+  _vdmHide();
+  if (hadState) history.back();
 }
 
 /* ─── SDG TICKER ─── */
